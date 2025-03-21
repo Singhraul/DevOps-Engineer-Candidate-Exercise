@@ -25,7 +25,7 @@ This workflow:
   3. Checks if the code is properly formatted.
 
 # Steps to Execute the Code:
-1. git clone https://github.com/your-repo/terraform-ec2.git
+1. git clone https://github.com/Singhraul/DevOps-Engineer-Candidate-Exercise.git
 2. cd DevOps-Engineer-Candidate-Exercise
 3. Initialize Terraform:
       terraform init
@@ -37,3 +37,15 @@ This workflow:
       echo "http://$(terraform output -raw public_ip)"
 7. Destroy the infrastructure when done:
      terraform destroy
+
+
+
+
+---
+
+### Summary
+- **Terraform Code**: Spins up an EC2 instance, configures a security group, and sets up a web server.
+- **Automation**: The `user_data` script automates the web server installation.
+- **Monitoring**: Optional CloudWatch monitoring is enabled.
+- **CI/CD**: Optional GitLab workflow for linting and validation.
+- **Documentation**: A `README.md` file provides step-by-step instructions and assumptions.
