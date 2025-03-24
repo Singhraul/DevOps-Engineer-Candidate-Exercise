@@ -1,6 +1,6 @@
 # Step 1: Define the provider (AWS)
 provider "aws" {
-  region = "us-east-1" # Use your preferred region
+  region = "ap-south-1" # Use your preferred region
 }
 
 # Step 2: Create a security group for the EC2 instance
@@ -35,22 +35,24 @@ resource "aws_security_group" "ec2_sg" {
 
 # Step 3: Launch an EC2 instance
 resource "aws_instance" "ec2_instance" {
-  ami                    = "ami-0c55b159cbfafe1f0" # Amazon Linux 2 AMI (Free Tier eligible)
-  instance_type          = "t2.micro"              # Free Tier eligible instance type
+  ami                    = "ami-0e35ddab05955cf57"
+  instance_type          = "t2.micro"              # Free Tier
   vpc_security_group_ids = [aws_security_group.ec2_sg.id]
 
   # Ensure the instance is launched in the default VPC and public subnet
-  subnet_id = data.aws_subnet.default.id
+  # subnet_id = data.aws_subnet.default.id
 
   # User data script to install and configure the web server
   user_data = <<-EOF
               #!/bin/bash
-              sudo yum update -y
-              sudo yum install -y httpd
-              sudo systemctl start httpd
-              sudo systemctl enable httpd
+              sudo apt update -y
+              sudo apt install -y apache2
+              sudo systemctl enable --now apache2
               echo "<html><body><h1>Hello, World!</h1></body></html>" | sudo tee /var/www/html/index.html
-              EOF
+              sudo chown www-data:www-data /var/www/html/index.html
+              sudo chmod 644 /var/www/html/index.html
+EOF
+
 
   # Add a tag to the instance for identification
   tags = {
@@ -66,8 +68,8 @@ data "aws_vpc" "default" {
 data "aws_subnet" "default" {
   vpc_id = data.aws_vpc.default.id
   filter {
-    name   = "default-for-az"
-    values = ["true"]
+    name   = "cidr-block"
+    values = ["172.31.16.0/20"]
   }
 }
 
